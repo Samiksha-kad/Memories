@@ -1,33 +1,32 @@
-import  mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import PostModel from '../models/postSchema.js'
-export const getMemory = ( async (req,res)=>{
-    try{
+export const getMemory = (async (req, res) => {
+    try {
         const postMessages = await PostModel.find();
         res.send(postMessages);
     }
-    catch(error){
-        res.status(404).json({message: error.message});
+    catch (error) {
+        res.status(404).json({ message: error.message });
         console.log(error)
     }
 })
 export const createPost = (async (req, res) => {
-    const { title, message, selectedFile, creator, tags } = req.body;    
+    const { title, message, selectedFile, creator, tags } = req.body;
     const newPostMessage = new PostModel({ title, message, selectedFile, creator, tags })
     try {
         await newPostMessage.save();
 
-        res.status(201).json(newPostMessage );
+        res.status(201).json(newPostMessage);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
 })
 export const updatePost = (async (req, res) => {
-    const {id:_id} = req.params
+    const { id: _id } = req.params
     const post = req.body
-    console.log(req.body,"updated data")
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send("No Post found")
-
-    const updatedData = await PostModel.findByIdAndUpdate(_id,post,{new:true})
+    console.log(req.body, "updated data")
+    if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send("No Post found")
+    const updatedData = await PostModel.findByIdAndUpdate(_id, post, { new: true })
     console.log(updatedData)
     res.json(updatedData)
 })
