@@ -22,11 +22,41 @@ export const createPost = (async (req, res) => {
     }
 })
 export const updatePost = (async (req, res) => {
-    const { id: _id } = req.params
-    const post = req.body
-    console.log(req.body, "updated data")
-    if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send("No Post found")
-    const updatedData = await PostModel.findByIdAndUpdate(_id, post, { new: true })
-    console.log(updatedData)
-    res.json(updatedData)
+    try {
+        const { id: _id } = req.params
+        const post = req.body
+        if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send("No Post found")
+        const updatedData = await PostModel.findByIdAndUpdate(_id, post, { new: true })
+        res.json(updatedData)
+
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+export const deletePost = (async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send("No Post found")
+        await PostModel.findByIdAndRemove(id)
+        res.json('Data Deleted')
+
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+
+export const likePost = (async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send("No Post found")
+        const likeupdatedData = await PostModel.findByIdAndUpdate(id, { $inc: { likeCount: 1 } }, { new: true })
+        res.json(likeupdatedData)
+
+    }
+    catch (error) {
+        console.log(error)
+    }
 })

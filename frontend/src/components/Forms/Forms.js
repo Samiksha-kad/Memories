@@ -7,10 +7,9 @@ import { useDispatch, useSelector } from 'react-redux'
 function Forms({ currentId, setCurrentId }) {
   const dispatch = useDispatch()
   const [postData, setPostData] = useState({ creator: '', title: '', message: '', tags: '', selectedFile: '' });
+
   const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
-  const clear = () => {
-    setPostData({ creator: '', title: '', message: '', tags: '', selectedFile: '' });
-  };
+
   const classes = useStyles();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +19,7 @@ function Forms({ currentId, setCurrentId }) {
     else {
       dispatch(createPosts(postData))
     }
+    clear()
   };
 
   useEffect(() => {
@@ -28,11 +28,16 @@ function Forms({ currentId, setCurrentId }) {
     }
   }, [post])
 
+  const clear = () => {
+    setCurrentId(null)
+    setPostData({ creator: '', title: '', message: '', tags: '', selectedFile: '' })
+  }
+
   return (
     <>
       <Paper className={classes.paper}>
         <form autoComplete="off" noValidate className={classes.form} onSubmit={handleSubmit}>
-          <Typography variant="h6"> Creating a Memory</Typography>
+          <Typography variant="h6"> {currentId ? 'Editing' : 'Creating'} a Memory</Typography>
 
           <TextField name="creator" variant="outlined" label="Creator" fullWidth value={postData.creator} onChange={(e) => setPostData({ ...postData, creator: e.target.value })} />
 
